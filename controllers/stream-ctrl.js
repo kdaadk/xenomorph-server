@@ -66,7 +66,6 @@ createStreams = (req, res) => {
 };
 
 getStreamById = async (req, res) => {
-    console.log(req.params.id);
     await Stream.findOne({ _id: req.params.id }, (err, stream) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
