@@ -65,14 +65,23 @@ createActivities = (req, res) => {
 };
 
 getActivities = async (req, res) => {
-    await Activity.find({}, (err, activities) => {
+    const { from, to } = req.query;
+
+    if (!from && !to) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a period',
+        })
+    }
+
+    await Activity.find({startDate: {'$gte': new Date(from), '$lt': new Date(to)}}, (err, activities) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
         if (!activities.length) {
             return res
                 .status(404)
-                .json({ success: false, error: `Activity not found` })
+                .json({ success: false, error: `Activities not found` })
         }
         return res.status(200).json({ success: true, data: activities })
     }).catch(err => console.log(err))
